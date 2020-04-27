@@ -1,0 +1,6 @@
+# ignore all the original datasets in traceset1
+
+traceset1/*.csv
+
+
+.ipynb_checkpoints/
