@@ -73,7 +73,7 @@ class agent_rf(Agent):
         self.lastAction = None
         self.lastObservation = None
 
-    def agent_cleanup():
+    def agent_cleanup(self):
         self.lastAction = None
         self.lastObservation = None
         self.valueFunction = None

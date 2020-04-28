@@ -12,19 +12,25 @@ from rlglue.utils import TaskSpecVRLGLUE3
 
 class env_rf(Environment):
     num_States = 3
-    PRED_States = attr_rf[num_States]
+    
     
 
     def __init__(self, host):
         self.Host = host    
         self.startRow, self.startCol = 0, 0
-        self.theWorld = WD_rf(PRED_States, self.Host)
-
-  
-
-    """def env_init(self):
+        
+    
+    def env_init(self):
         PRED_States = attr_rf[num_States]
-        theWorld = WD_rf(PRED_States, self.Host)"""
+        self.theWorld = WD_rf(PRED_States, self.Host)
+        # taskspec parts need to be fixed
+        theTaskSpecObject = TaskSpecVRLGLUE3()
+        theTaskSpecObject.setEpisodic()
+        theTaskSpecObject.setDiscountFactor(0.8)
+        theTaskSpecObject.addDiscreteObservation(IntRange(0, self.theWorld.getNumStates()-1))
+
+        taskSpecString = theTaskSpecObject.toTaskSpec()
+        return taskSpecString
 
     def evn_start(self):
         theObservation = Observation(1, 0, 0)
@@ -33,6 +39,27 @@ class env_rf(Environment):
             _rf = 0
             if(theWorld.State == 0):
                 _rf = 0.1
+            elif(theWorld.State == 1):
+                _rf = 0.2
+            elif(theWorld.State == 2):
+                _rf = 0.3
+            print("State: "+ theWorld.State + "\trf: "+ _rf)
+        return theObservation
+
+    def Reward_observation_terminal(self, thisAction):
+        self.theWorld.updatePosition(thisAction.getInt(0))
+
+        theObservation = Observation(1, 0, 0)
+        theObservation.setInt(0, self.theWorld.getState())
+        RewardObs = Reward_observation_terminal()
+        RewardObs.setObservation(theObservation)
+        RewardObs.setTerminal(self.theWorld.isTerminal())
+        RewardObs.setReward(self.theWorld.getReward())
+
+        return RewardObs
+        
+    def env_message(self, message):
+        return "SampleMinesEnvironment does not understand your message"
     #----------------------------------------
 """
     def states(self):
