@@ -1,7 +1,7 @@
 # environment
 
 #for git test
-import numpy
+
 import random
 import DTNHost
 from rlglue.environment.Environment import Environment
