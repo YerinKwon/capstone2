@@ -6,8 +6,9 @@ from rlglue.types import Observation
 from rlglue.utils import TaskSpecVRLGLUE3
 from rlglue.agent.Agent import Agent
 
-class agent:
-    def __init__(self):
+class agent_rf(Agent):
+    def __init__(self, host):
+        self.Host = host
         self.sarsa_stepsize = 0.7
         self.sarsa_epsilon = 1.0
         self.sarsa_gamma = 1.0
@@ -24,8 +25,6 @@ class agent:
         sarsa_gamma = theTaskSpec.getDiscountFactor()
         valueFunction = [numActions][numStates]
 
-    def agent_rf(self, host):
-        self.Host = host
     
     def agent_start(self, observation):
         newActionInt = egreedy(observation.getInt(0))

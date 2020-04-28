@@ -1,7 +1,6 @@
 # environment
 
-#for git test
-
+import numpy
 import random
 import DTNHost
 from rlglue.environment.Environment import Environment
@@ -11,15 +10,16 @@ from rlglue.types import Reward_observation_terminal
 from rlglue.utils import TaskSpecVRLGLUE3
 
 class env_rf(Environment):
-   
-    def __init__(self):
-        startRow, startCol = 0, 0
-        num_States = 3
-        PRED_States = attr_rf[num_States]
-        theWorld = WD_rf(PRED_States, self.Host)
+    num_States = 3
+    PRED_States = attr_rf[num_States]
+    Host = None
+    startRow, startCol = 0, 0
 
-    def env_rf(self, host):
-        self.Host = host
+    def __init__(self, host):
+        self.Host = host    
+        self.theWorld = WD_rf(PRED_States, self.Host)
+
+  
 
     """def env_init(self):
         PRED_States = attr_rf[num_States]

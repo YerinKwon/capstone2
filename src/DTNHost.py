@@ -1,6 +1,7 @@
 
+
 class DTNHost:
-    def __init__(self):
+    def __init__(self, msgLs, movLs, groupId, interf, comBus, mmProto, mRouteProto, disLs):
         self.nextAddress = 0
         self.lmd = 0.0
         self.host_count = 0
@@ -10,7 +11,7 @@ class DTNHost:
         self.Dest_x, self.Dest_y = 750, 750
         self.isMoving = False
 
-    def DTNHost(self, msgLs, movLs, groupId, interf, comBus, mmProto, mRouteProto, disLs):
+    
         self.comBus = comBus
         self.location = Coord(0,0)
         self.address = getNextAddress()
