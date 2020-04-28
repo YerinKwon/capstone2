@@ -9,14 +9,15 @@ from rlglue.types import Observation
 from rlglue.types import Reward_observation_terminal
 from rlglue.utils import TaskSpecVRLGLUE3
 
+
 class env_rf(Environment):
     num_States = 3
     PRED_States = attr_rf[num_States]
-    Host = None
-    startRow, startCol = 0, 0
+    
 
     def __init__(self, host):
         self.Host = host    
+        self.startRow, self.startCol = 0, 0
         self.theWorld = WD_rf(PRED_States, self.Host)
 
   
