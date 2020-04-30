@@ -16,7 +16,7 @@ def split_file(filename):
 
 def to_sec(df):
     t0 = pd.to_datetime(df.loc[0,'timestamp']).normalize()
-    df["sec"] = (pd.to_datetime(df["timestamp"]) -t0).dt.total_seconds()
+    df["sec"] = list(map(int,(pd.to_datetime(df["timestamp"]) -t0).dt.total_seconds()))
 
 def to_ID(df):
     c_id_lst = []
@@ -39,3 +39,12 @@ def to_ID(df):
         pickle.dump(dic, fw)
     with open("ID_cnt.pickle","wb") as fw:
         pickle.dump(c_id, fw)
+        
+def add_location(df):
+    locations = pd.read_csv("traceset1/APlocations.txt")
+    return pd.merge(df, locations, on='AP')
+    
+def to_testdf(df):
+    to_sec(df)
+    to_ID(df)
+    return add_location(df).drop(columns=["timestamp", "client", "AP","floor"])
