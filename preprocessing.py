@@ -27,8 +27,9 @@ def to_ID(df):
         dic = pickle.load(fr)
     with open("ID_cnt.pickle","rb") as fr:
         c_id = pickle.load(fr)    
-        
-    for client in df.client:
+    
+        for row in df.itertuples():
+            client = getattr(row,"client")
             if client in dic:
                 c_id_lst.append(dic[client])
             else:
@@ -51,7 +52,10 @@ def to_testdf(df):
     to_ID(df)
     return add_location(df).drop(columns=["timestamp", "client", "AP","floor"])
 
-def get_log_ID(ID):
+def get_log_by_ID(ID):
+    '''
+    Directly get Dataframe by iterating files in trace_by_date
+    '''
     df_ID = pd.DataFrame({'sec':[],'ID':[],'x_coordinate(m)':[],'y_coordinate(m)':[]},dtype='int64')
     chk_csv = re.compile(".*[.]csv")
     for file in os.listdir("trace_by_date/"):
@@ -64,5 +68,5 @@ def get_log_ID(ID):
     return df_ID
 
 def to_file_by_ID(ID):
-    df = get_log_ID(ID)
-    df.to_csv("trace_by_ID/"+str(ID)+".csv")
+    df = get_log_by_ID(ID)
+    df.to_csv("trace_by_ID/"+str(ID)+".csv", index=False)
