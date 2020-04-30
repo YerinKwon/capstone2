@@ -1,6 +1,8 @@
 import pandas as pd
 from datetime import datetime
 import pickle
+import os
+import re
 
 def split_file(filename):
     df = pd.read_csv("traceset1/"+filename)
@@ -48,3 +50,19 @@ def to_testdf(df):
     to_sec(df)
     to_ID(df)
     return add_location(df).drop(columns=["timestamp", "client", "AP","floor"])
+
+def get_log_ID(ID):
+    df_ID = pd.DataFrame({'sec':[],'ID':[],'x_coordinate(m)':[],'y_coordinate(m)':[]},dtype='int64')
+    chk_csv = re.compile(".*[.]csv")
+    for file in os.listdir("trace_by_date/"):
+        if(chk_csv.match(file)):
+            df = pd.read_csv("trace_by_date/"+file, index_col=0)
+            df.reset_index(drop=True, inplace=True)
+            df = to_testdf(df)
+            df_ID = pd.concat([df_ID, df.loc[df.ID == ID]])
+    df_ID.reset_index(drop=True, inplace=True)
+    return df_ID
+
+def to_file_by_ID(ID):
+    df = get_log_ID(ID)
+    df.to_csv("trace_by_ID/"+str(ID)+".csv")
