@@ -2,7 +2,6 @@
 
 traceset1/*.csv
 trace_by_date/*.csv
-trace_by_ID/*.csv
 
 __pycache__/
 
