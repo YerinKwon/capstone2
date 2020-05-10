@@ -1,0 +1,4 @@
+{
+    "environment": "gym",
+    "level": "CartPole"
+}
