@@ -2,7 +2,7 @@
 
 import numpy
 import random
-import DTNHost
+
 from rlglue.environment.Environment import Environment
 from rlglue.types import Action
 from rlglue.types import Observation
@@ -15,14 +15,13 @@ class env_rf(Environment):
     
     
 
-    def __init__(self, host):
-        self.Host = host    
+    def __init__(self): 
         self.startRow, self.startCol = 0, 0
         
     
     def env_init(self):
         PRED_States = attr_rf[num_States]
-        self.theWorld = WD_rf(PRED_States, self.Host)
+        self.theWorld = WD_rf(PRED_States)
         # taskspec parts need to be fixed
         theTaskSpecObject = TaskSpecVRLGLUE3()
         theTaskSpecObject.setEpisodic()
@@ -35,18 +34,19 @@ class env_rf(Environment):
     def evn_start(self):
         theObservation = Observation(1, 0, 0)
         theObservation.setInt(0, theWorld.getState())
-        if(Host.getAddress() == 11):
-            _rf = 0
-            if(theWorld.State == 0):
-                _rf = 0.1
-            elif(theWorld.State == 1):
-                _rf = 0.2
-            elif(theWorld.State == 2):
-                _rf = 0.3
-            print("State: "+ theWorld.State + "\trf: "+ _rf)
+        
+        _rf = 0
+        if(theWorld.State == 0):
+            _rf = 0.1
+        elif(theWorld.State == 1):
+            _rf = 0.2
+        elif(theWorld.State == 2):
+            _rf = 0.3
+        print("State: "+ theWorld.State + "\trf: "+ _rf)
+        
         return theObservation
 
-    def Reward_observation_terminal(self, thisAction):
+    def env_step(self, thisAction):
         self.theWorld.updatePosition(thisAction.getInt(0))
 
         theObservation = Observation(1, 0, 0)
@@ -100,8 +100,8 @@ class WD_rf:
         self.Prev_State = 0
         self.action = 0
 
-    def WD_rf(self, worldMap, host):
-        self.Host = host
+    def WD_rf(self, worldMap):
+
         self.theMap = worldMap
         self.numStates = theMap.length
 
