@@ -1,6 +1,9 @@
 # ignore all the original datasets in traceset1
 
 traceset1/*.csv
+trace_by_date/*.csv
+
 __pycache__/
 
 .ipynb_checkpoints/
+*.pyc

@@ -1,6 +1,8 @@
 import pandas as pd
 from datetime import datetime
 import pickle
+import os
+import re
 
 def split_file(filename):
     df = pd.read_csv("traceset1/"+filename)
@@ -16,7 +18,7 @@ def split_file(filename):
 
 def to_sec(df):
     t0 = pd.to_datetime(df.loc[0,'timestamp']).normalize()
-    df["sec"] = (pd.to_datetime(df["timestamp"]) -t0).dt.total_seconds()
+    df["sec"] = list(map(int,(pd.to_datetime(df["timestamp"]) -t0).dt.total_seconds()))
 
 def to_ID(df):
     c_id_lst = []
@@ -25,8 +27,9 @@ def to_ID(df):
         dic = pickle.load(fr)
     with open("ID_cnt.pickle","rb") as fr:
         c_id = pickle.load(fr)    
-        
-    for client in df.client:
+    
+        for row in df.itertuples():
+            client = getattr(row,"client")
             if client in dic:
                 c_id_lst.append(dic[client])
             else:
@@ -39,3 +42,31 @@ def to_ID(df):
         pickle.dump(dic, fw)
     with open("ID_cnt.pickle","wb") as fw:
         pickle.dump(c_id, fw)
+        
+def add_location(df):
+    locations = pd.read_csv("traceset1/APlocations.txt")
+    return pd.merge(df, locations, on='AP')
+    
+def to_testdf(df):
+    to_sec(df)
+    to_ID(df)
+    return add_location(df).drop(columns=["timestamp", "client", "AP","floor"])
+
+def get_log_by_ID(ID):
+    '''
+    Directly get Dataframe by iterating files in trace_by_date
+    '''
+    df_ID = pd.DataFrame({'sec':[],'ID':[],'x_coordinate(m)':[],'y_coordinate(m)':[]},dtype='int64')
+    chk_csv = re.compile(".*[.]csv")
+    for file in os.listdir("trace_by_date/"):
+        if(chk_csv.match(file)):
+            df = pd.read_csv("trace_by_date/"+file, index_col=0)
+            df.reset_index(drop=True, inplace=True)
+            df = to_testdf(df)
+            df_ID = pd.concat([df_ID, df.loc[df.ID == ID]])
+    df_ID.reset_index(drop=True, inplace=True)
+    return df_ID
+
+def to_file_by_ID(ID):
+    df = get_log_by_ID(ID)
+    df.to_csv("trace_by_ID/"+str(ID)+".csv", index=False)
