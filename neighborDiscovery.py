@@ -1,3 +1,5 @@
+#-*- coding:utf-8 -*-
+
 import pandas as pd
 import numpy as np
 import math
@@ -99,7 +101,6 @@ class neighborDiscovery:
         output:
             - current duty cycle
         '''
-
         if not predicted:
             return self.DC_DEF
 

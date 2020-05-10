@@ -7,3 +7,4 @@ trace_by_ID/*.csv
 __pycache__/
 
 .ipynb_checkpoints/
+*.pyc

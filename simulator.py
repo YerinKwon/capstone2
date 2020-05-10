@@ -1,3 +1,5 @@
+#-*- coding:utf-8 -*-
+
 import csv
 import queue
 import neighborDiscovery
@@ -12,6 +14,7 @@ sec(int),ID,x_coordinate(m),y_coordinate(m),AP_ID\n
 example:
 sec | ID | x_coordinate | y_coordinate | AP_ID
 27727,10,21728,32711,141
+....
 
 '''
 
@@ -34,11 +37,13 @@ class Simulator:
         f = open(filename,'r')
         f.readline()
         cur_t = 0
-        cur_row = list(map(int, f.readline()[:-1].split(',')))
+        cur_row = f.readline()
+        sec, ID, x_coord, y_coord, AP_ID = list(map(int, cur_row[:-1].split(',')))
         storage = queue.Queue(maxsize=self.STORAGE_MAX)
 
         while cur_row != "":
-            print(cur_t)
+            if cur_t%10000 == 0:
+                print("current time: "+str(cur_t))
             #contact prediction
             predicted = self.nd.ContactPrediction(storage, self.SIGMA)
             
@@ -46,12 +51,20 @@ class Simulator:
             dc = self.nd.DutyCycleAdaptation(predicted, cur_t, self.GAMMA)
 
             #if there's new log in current time: contact learning
-            if(cur_row[0] >= cur_t):
+            if(sec == cur_t):
+                print(cur_t)
                 #read
-                sec, ID, x_coord, y_coord, AP_ID = list(map(int, f.readline()[:-1].split(',')))
+                if storage.qsize == self.STORAGE_MAX:
+                    storage.get()
                 storage.put(sec)    #insert to the storage: sec
+                cur_row = f.readline()
+                if cur_row:
+                    sec, ID, x_coord, y_coord, AP_ID = list(map(int, cur_row[:-1].split(',')))
 
-            cur_t += 1
+            if cur_t == 86400:
+                cur_t = 1
+            else:
+                cur_t += 1
             self.ENERGY_CONSUMPTION += dc
         f.close()
         print("Total energy consumption: "+str(self.ENERGY_CONSUMPTION))
