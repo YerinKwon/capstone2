@@ -1,3 +1,8 @@
+from rl import rl
+from agent import agent
+from env import env
+
+
         # contact 
         #   1) detected when the DC = DCdef
         #   2) detected during DC growth for estimated contactable time
@@ -7,8 +12,8 @@
         #   CP for sigma = n(2)/n(all detected contacts)
         #   CP for gamma = n(3)/n(all detected contacts)
 
-Adaptive_Duty_Cycle = 0
-init_duty_cycle = 0
+Adaptive_Duty_Cycle = 3
+init_duty_cycle = 2
 sleep_duty_cycle = 0
 
 AWAKE_ENERGY = 329.9
@@ -25,6 +30,7 @@ third_case_rev = 0
 _PRD = False    #dc temp > sleep dc?
 _SRD = False    #extra dc
 
+# day 기준으로 돌려야하는 것 같은데
 
 # while (current time != end time)
 #------------if contact detection---------------
@@ -51,4 +57,16 @@ detected_contacts = first_case + second_case + third_case + fourth_case
 CP_s = second_case/detected_contacts
 CP_g = third_case/detected_contacts
 #Energy = 
+#effic_s
 
+
+# rl
+Agent = agent()
+Env = env()
+rl = rl()
+rl.rl_init(Agent, Env)
+rl.rl_start()
+
+for i in range(10):
+    print("\n", i, "th step")
+    rl.rl_step()
