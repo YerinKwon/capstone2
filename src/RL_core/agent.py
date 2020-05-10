@@ -1,5 +1,5 @@
 import random
-import DTNHost
+import numpy as np
 import array as arr
 from rlglue.types import Action
 from rlglue.types import Observation
@@ -11,8 +11,10 @@ class agent_rf(Agent):
     sarsa_epsilon = 1.0
     sarsa_gamma = 1.0
 
-    def __init__(self, host):
-        self.Host = host
+    def __init__(self):
+        self.lastAction = None
+        self.lastObservation = None
+        self.valueFunction = None
         self.numActions = 0
         self.numStates = 0
         self.policyFrozen = False
@@ -97,12 +99,12 @@ class agent_rf(Agent):
     def egreedy(self, theState):
         if (not exploringFrozen):
             if (random.uniform(0,1) <= sarsa_epsilon):
-                if(Host.getAddress() == 11):
-                    print("\tagent_rf - current state: "+ theState)
-                    print("\t\tvalueFunction: ")
-                    for i in range(numActions):
-                        print(self.valueFunction[i][theState] + "\t")
-                    print("\n")
+                
+                print("\tagent_rf - current state: "+ theState)
+                print("\t\tvalueFunction: ")
+                for i in range(numActions):
+                    print(self.valueFunction[i][theState] + "\t")
+                print("\n")
 
                 return random.randint(0, numActions)
         
@@ -111,10 +113,10 @@ class agent_rf(Agent):
             if(valueFunction[i][theState] >= valueFunction[maxIndex][theState]):
                 maxIndex = i
 
-        if(Host.getAddress() == 11):
-            print("\tagent_rf - current state: "+theState)
-            print("\t\tvalueFunction: ")
-            for j in range(numActions):
-                print(self.valueFunction[j][theState] + "\t")
-            print("\n")
+       
+        print("\tagent_rf - current state: "+theState)
+        print("\t\tvalueFunction: ")
+        for j in range(numActions):
+            print(self.valueFunction[j][theState] + "\t")
+        print("\n")
         return maxIndex
