@@ -56,7 +56,7 @@ class env:
 
         #   CP for sigma = n(2)/n(all detected contacts)
         #   CP for gamma = n(3)/n(all detected contacts)
-        reward = random.randint(100)
+        reward = random.randint(10)
 
         return reward
 
