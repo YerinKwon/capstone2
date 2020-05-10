@@ -43,8 +43,8 @@ class agent:
         self.Qval[newAction][newState] = Q_sa + self.stepsize * reward
         
         print("-----agent step-----")
-        print("new action:", newAction)
-        print("current state:", self.lastState, "next state:", state)
+        print("last state:", self.lastState, "current state:", state)
+        print("Q-value:", self.Qval)
 
         self.lastAction = newAction
         self.lastState = newState

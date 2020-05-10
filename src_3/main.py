@@ -67,6 +67,6 @@ rl = rl()
 rl.rl_init(Agent, Env)
 rl.rl_start()
 
-for i in range(10):
+for i in range(100):
     print("\n", i, "th step")
     rl.rl_step()

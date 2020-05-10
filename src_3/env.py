@@ -23,8 +23,8 @@ class env:
             nextState = self.state + 1
         elif action == 2:
             nextState = self.state - 1
-        while(nextState < 0 or nextState > 3):
-            nextAction = random.randint(3)
+        while(nextState == -1 or nextState == 3):
+            nextAction = random.randint(0,2)
             while(nextAction == action):
                 nextAction = random.randint(3)
             if nextAction == 0:
@@ -33,13 +33,14 @@ class env:
                 nextState = self.state + 1
             elif nextAction == 2:
                 nextState = self.state - 1
+            action = nextAction
         reward = self.getReward()
 
         self.observation.setState(nextState)
         self.observation.setReward(reward)
         print("-----env_step-----")
-        print("next state: ", nextState)
-        print("reward: ", reward)
+        print("next action:", action)
+        print("next state:", nextState, "reward:", reward)
 
         return self.observation
 
@@ -55,7 +56,7 @@ class env:
 
         #   CP for sigma = n(2)/n(all detected contacts)
         #   CP for gamma = n(3)/n(all detected contacts)
-        reward = 1
+        reward = random.randint(100)
 
         return reward
 
