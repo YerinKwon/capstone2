@@ -1,6 +1,6 @@
-from rl import rl
-from agent import agent
-from env import env
+from src_3.rl import rl
+from src_3.agent import agent
+from src_3.env import env
 
 
         # contact 

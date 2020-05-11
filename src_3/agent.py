@@ -52,5 +52,9 @@ class agent:
 
         return newAction
 
+    def agent_message(self, msg):
+        if (msg==""):
+            print ("something~")
+
     
 

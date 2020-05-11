@@ -1,11 +1,11 @@
 # for reinforcement learning
-from agent import agent
-from env import env
-from env import Observation
+from src_3.agent import agent
+from src_3.env import env
+from src_3.env import Observation
 class rl:
     def __init__(self):
-        self.agent = agent()
-        self.env = env()
+        self.agent = None
+        self.env = None
         self.observation = Observation(0,0)
 
     def rl_init(self, agent, env):
@@ -24,3 +24,9 @@ class rl:
         reward = self.observation.getReward()
         action = self.agent.agent_step(reward, state)
         self.observation = self.env.env_step(action)
+
+    def rl_agent_msg(self, msg):
+        self.agent.agent_message(msg)
+
+    def rl_env_msg(self, msg):
+        self.env.env_message(msg)
