@@ -52,9 +52,11 @@ class Simulator:
 
             #if there's new log in current time: contact learning
             if(sec == cur_t):
-                print(cur_t)
+                print("current time: "+str(cur_t))
+                print("Duty Cycle: "+str(dc))
+                print("storage size: "+str(storage.qsize()))
                 #read
-                if storage.qsize == self.STORAGE_MAX:
+                if storage.qsize() == self.STORAGE_MAX:
                     storage.get()
                 storage.put(sec)    #insert to the storage: sec
                 cur_row = f.readline()
