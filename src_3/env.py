@@ -1,5 +1,5 @@
 # env calculate reward and return it. (+next state)
-from agent import agent
+from src_3.agent import agent
 from numpy import random
 class env:
     def __init__(self):
@@ -8,6 +8,7 @@ class env:
         self.lastState = 0
         self.state = 0
         self.reward = 0
+        self.efficiency = 0
 
     def env_start(self, action):
         _rf = 0.2
@@ -56,9 +57,15 @@ class env:
 
         #   CP for sigma = n(2)/n(all detected contacts)
         #   CP for gamma = n(3)/n(all detected contacts)
-        reward = random.randint(10)
+        
 
-        return reward
+        return self.efficiency
+
+    def env_message(self, msg):
+        lst = msg.split(' ')
+        if (lst[0] == 'efficiency'):
+            self.efficiency = float(lst[1])
+
 
 class Observation:
     def __init__(self, state=None, reward=None):

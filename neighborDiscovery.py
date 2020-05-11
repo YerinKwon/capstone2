@@ -13,9 +13,9 @@ class neighborDiscovery:
         self.EPS_prd = 0.3 #Contact prediction->prediction phase에서 선정되는 최소 집합 사이즈
 
         #persentage
-        self.DC_MIN = 2
+        self.DC_MIN = 2     #DC sleep
         self.DC_MAX = 20
-        self.DC_DEF = 8
+        self.DC_DEF = 8     #DC init
 
         #seconds
         self.L_PRD = 900
