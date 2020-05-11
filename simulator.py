@@ -119,6 +119,11 @@ class Simulator:
                 self.rl.rl_env_msg(msg)
                 self.rl.rl_step()
 
+                #------init------
+                self.first_case = 0
+                self.second_case = 0
+                self.third_case = 0
+                self.fourth_case = 0
                 cur_t = 1
                 self.DAY += 1
                 self.ENERGY_CONSUMPTION = 0
