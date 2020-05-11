@@ -99,13 +99,14 @@ class Simulator:
                     self.third_case += 1
                 elif (dc == self.sleep_DC):
                     self.fourth_case += 1
-
+                self._dc += 1
 
                 cur_row = f.readline()
                 if cur_row:
                     sec, ID, x_coord, y_coord, AP_ID = list(map(int, cur_row[:-1].split(',')))
 
             if cur_t == 86400:
+                self._dc = 100*self._dc/(3600.0*4.0*24.0)
                 detected_contacts = self.first_case + self.second_case + self.third_case + self.fourth_case
                 self.ENERGY_CONSUMPTION = 1.0 - (self._dc*self.AWAKE_ENERGY + (100.0-self._dc)*self.SLEEP_ENERGY)/\
                     (self.init_DC*self.AWAKE_ENERGY + (100.0-self.init_DC)*self.SLEEP_ENERGY)
@@ -115,7 +116,8 @@ class Simulator:
                 effic_s = self.accuracy_sigma/self.ENERGY_CONSUMPTION
                 effic_g = self.accuracy_gamma/self.ENERGY_CONSUMPTION
 
-                msg = "efficiency" + str(effic_s)
+                msg = "efficiency " + str(effic_s)
+                print(msg)
                 self.rl.rl_env_msg(msg)
                 self.rl.rl_step()
 
@@ -132,7 +134,7 @@ class Simulator:
                 
             else:
                 cur_t += 1
-                self._dc += dc
+                #self._dc += dc
 
         f.close()
         end_time = time.time() - start_time
