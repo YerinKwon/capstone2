@@ -30,7 +30,7 @@ class Simulator:
         self.ENERGY_CONSUMPTION = 0
         self.accuracy_sigma = 0
         self.accuracy_gamma = 0
-        self._dc = 0
+        # self._dc = 0
         self.AWAKE_ENERGY = 329.9
         self.SLEEP_ENERGY = 4.02
         self.tSleep = 0
@@ -73,13 +73,14 @@ class Simulator:
         storage = queue.Queue(maxsize=self.STORAGE_MAX)
 
         while cur_row != "":
-            #if cur_t%10000 == 0:
-                #print("current time: "+str(cur_t))
             #contact prediction
             predicted = self.nd.ContactPrediction(storage, self.SIGMA)
             
             #duty cycle adaptation
-            dc = self.nd.DutyCycleAdaptation(predicted, cur_t, self.GAMMA)
+            case, dc = self.nd.DutyCycleAdaptation(predicted, cur_t, self.GAMMA)
+
+            #add energy consumption by duty cycle
+            self.ENERGY_CONSUMPTION += dc*0.01*self.AWAKE_ENERGY + (100-dc)*0.01*self.SLEEP_ENERGY
 
             #add to sleep duration | scanning duration
             if(dc == self.sleep_DC):
@@ -89,43 +90,34 @@ class Simulator:
 
             #if there's new log in current time: contact learning
             if(sec == cur_t):
-                print("current time: "+str(cur_t))
-                print("Duty Cycle: "+str(dc))
-                print("storage size: "+str(storage.qsize()))
                 #read
                 if storage.qsize() == self.STORAGE_MAX:
                     storage.get()
                 storage.put(sec)    #insert to the storage: sec
 
+                print("detected: "+str(cur_t))
+                print("case: "+str(case))
                 #add to detected contacts case
-                if (dc == self.init_DC):
+                if (case == 1):    #detected when DC_DEF
                     self.first_case += 1
-                elif (dc > self.init_DC):
+                elif (case == 2):   #detected during growth
                     self.second_case += 1
-                elif (dc > self.sleep_DC and
-                    dc < self.init_DC):
+                elif (case == 3): #detected when seren
                     self.third_case += 1
-                elif (dc == self.sleep_DC):
+                elif (case == 4): #detected when sleep
                     self.fourth_case += 1
-                
 
                 cur_row = f.readline()
                 if cur_row:
                     sec, ID, x_coord, y_coord, AP_ID = list(map(int, cur_row[:-1].split(',')))
 
             if cur_t == 86400:
-                # E = TSleep * ESleep + Tscanning * EAwake
-                self.ENERGY_CONSUMPTION = self.tSleep*self.SLEEP_ENERGY + self.tScanning*self.AWAKE_ENERGY
-
-                #self._dc = 100*self._dc/(3600.0*4.0*24.0)
-                detected_contacts = self.first_case + self.second_case + self.third_case + self.fourth_case
-                #self.ENERGY_CONSUMPTION = 1.0 - (self._dc*self.AWAKE_ENERGY + (100.0-self._dc)*self.SLEEP_ENERGY)/\
-                 #   (self.init_DC*self.AWAKE_ENERGY + (100.0-self.init_DC)*self.SLEEP_ENERGY)
-                
-                
+                #run rl once a day
+                detected_contacts = self.first_case + self.second_case + self.third_case + self.fourth_case 
                 self.accuracy_sigma = self.second_case/detected_contacts
                 self.accuracy_gamma = self.third_case/detected_contacts
 
+                #rewards
                 effic_s = self.accuracy_sigma/self.ENERGY_CONSUMPTION
                 effic_g = self.accuracy_gamma/self.ENERGY_CONSUMPTION
 
@@ -133,6 +125,12 @@ class Simulator:
                 
                 self.rl.rl_env_msg(msg)
                 self.rl.rl_step()
+
+                #----------업뎃된 시그마, 감마값은 어떻게 반영됨?? -----------
+                #----------아직 안짬^^!----------
+
+                print("one day passed!")
+                print("Energy consumption on day "+str(self.DAY)+": "+str(self.ENERGY_CONSUMPTION))
 
                 #------init------
                 self.first_case = 0
@@ -142,11 +140,10 @@ class Simulator:
                 self.tScanning = 0
                 self.tSleep = 0
                 cur_t = 1
+                self.DAY += 1
                 
                 self.ENERGY_CONSUMPTION = 0
-                self._dc = 0
-                print("day", self.DAY, "passed!\n")
-                self.DAY += 1
+                # self._dc = 0
                 
             else:
                 cur_t += 1
@@ -155,4 +152,5 @@ class Simulator:
         f.close()
         end_time = time.time() - start_time
         #print("Total energy consumption: "+str(self.ENERGY_CONSUMPTION))
-        print("Total work done in"+end_time+"seconds")
+        print("Total work done in"+end_time+"seconds")  #타임은 왜잰거??
+                                                        #한번돌릴때 얼마나 걸리나 알아둬야 실험할때 편할것같아서,,,

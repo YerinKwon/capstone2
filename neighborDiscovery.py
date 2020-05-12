@@ -102,22 +102,26 @@ class neighborDiscovery:
             - current duty cycle
         '''
         if not predicted:
-            return self.DC_DEF
+            return (1, self.DC_DEF)
 
-        C = 0
+        C, case = 0, 0
         for i,cur_t in enumerate(predicted):
             C_prd = self.A_PRD*norm(cur_t, self.SIGMA_PRD).pdf(t)
             if(i == 0):
+                cur_case = 2
                 C_exp = 0
             else:
+                cur_case = 3
                 C_exp = self.Seren(t, predicted[i-1], cur_t, GAMMA)
             #----일단은 제일 큰값 넣긴 했는데 맞을까?
             if(C < C_prd+C_exp):
+                case = cur_case
                 C = C_prd+C_exp 
         
         if C<self.DC_MIN:
+            case = 4
             C = self.DC_MIN
-        return C
+        return (case, C)
 
 
     def Seren(self, t, t_s, t_e, GAMMA):

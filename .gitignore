@@ -1,7 +1,9 @@
 # ignore all the original datasets in traceset1
 
-traceset1/*.csv
-trace_by_date/*.csv
+data/traceset1/*.csv
+data/trace_by_ID/*.csv
+data/new_trace_by_ID/*.csv
+data/trace_original/*.csv
 
 __pycache__/
 
