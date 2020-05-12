@@ -95,22 +95,14 @@ class Simulator:
                 print(cur_t," seconds passed")
 
             #contact prediction
-            #self.SIGMA = self.rl_s.rl_getParam()
             predicted = self.nd.ContactPrediction(storage, self.SIGMA)
             
             #duty cycle adaptation
-            #self.GAMMA = self.rl_g.rl_getParam()
             case, dc = self.nd.DutyCycleAdaptation(predicted, cur_t, self.GAMMA)
 
             #add energy consumption by duty cycle
             self.ENERGY_CONSUMPTION += dc*0.01*self.AWAKE_ENERGY + (100-dc)*0.01*self.SLEEP_ENERGY
             self.ENERGY_FDC += self.init_DC*0.01*self.AWAKE_ENERGY + (100-self.init_DC)*0.01*self.SLEEP_ENERGY
-
-            #add to sleep duration | scanning duration
-            if(dc == self.sleep_DC):
-                self.tSleep += 1
-            else:
-                self.tScanning += 1
 
             #if there's new log in current time: contact learning
             if(sec == cur_t):
@@ -156,13 +148,13 @@ class Simulator:
                 self.rl_g.rl_env_msg(msg_g)
                 self.rl_g.rl_step()
 
-                #----------업뎃된 시그마, 감마값은 어떻게 반영됨?? -----------
-                #----------아직 안짬^^!----------
-                # self.SIGMA = 
-                # self.GAMMA = 
+                # 일단은 env에서 시그마 = 0.1~0.3 감마 = 1020~1380 범위로 설정해둬서 rl에서 읽어오면 제대로 안돌아감
+                # parameter 관련 식 해결되면 rl_getParam()로 불러올 예정
+                #self.SIGMA = self.rl_s.rl_getParam()
+                #self.GAMMA = self.rl_g.rl_getParam()
 
                 print("############################")
-                print("one day have passed!")
+                print("one day have passed! (", self.DAY, ")")
                 print("Energy reduction: ",1-self.ENERGY_CONSUMPTION/self.ENERGY_FDC)
                 print("Detection accuracy: ",self.accuracy_gamma+self.accuracy_sigma)
                 print("############################\n")
@@ -172,8 +164,6 @@ class Simulator:
                 self.second_case = 0
                 self.third_case = 0
                 self.fourth_case = 0
-                self.tScanning = 0
-                self.tSleep = 0
                 cur_t = 1
                 self.DAY += 1
                 
@@ -186,5 +176,4 @@ class Simulator:
         f.close()
         # end_time = time.time() - start_time
         #print("Total energy consumption: "+str(self.ENERGY_CONSUMPTION))
-        # print("Total work done in"+end_time+"seconds")  #타임은 왜잰거??
-                                                        #한번돌릴때 얼마나 걸리나 알아둬야 실험할때 편할것같아서,,,
+        # print("Total work done in"+end_time+"seconds")
