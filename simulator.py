@@ -28,9 +28,11 @@ class Simulator:
 
         #------for energy calculation------
         self.ENERGY_CONSUMPTION = 0
+        self.ENERGY_FDC = 0
+        self.ENERGY_REDUCTION = 0
+
         self.accuracy_sigma = 0
         self.accuracy_gamma = 0
-        # self._dc = 0
         self.AWAKE_ENERGY = 329.9
         self.SLEEP_ENERGY = 4.02
         self.tSleep = 0
@@ -43,6 +45,7 @@ class Simulator:
 
         self.init_DC = 8
         self.sleep_DC = 2
+
         #------------------------------
 
         self.DAY = 1
@@ -55,7 +58,10 @@ class Simulator:
         self.rl.rl_init(self.agent, self.env)
         self.rl.rl_start()
 
-        #------will be learned by RL-------
+        self.INTERVAL_SIGMA = 120
+        self.INTERVAL_GAMMA = 0.1
+
+        #------INITIAL VALUE: will be learned by RL-------
         self.SIGMA = 5000
         self.GAMMA = 3
 
@@ -64,7 +70,7 @@ class Simulator:
         '''
             input: filepath+name as string
         '''
-        start_time = time.time()
+        # start_time = time.time()
         f = open(filename,'r')
         f.readline()
         cur_t = 0
@@ -81,6 +87,7 @@ class Simulator:
 
             #add energy consumption by duty cycle
             self.ENERGY_CONSUMPTION += dc*0.01*self.AWAKE_ENERGY + (100-dc)*0.01*self.SLEEP_ENERGY
+            self.ENERGY_FDC += self.init_DC*0.01*self.AWAKE_ENERGY + (100-self.init_DC)*0.01*self.SLEEP_ENERGY
 
             #add to sleep duration | scanning duration
             if(dc == self.sleep_DC):
@@ -130,7 +137,9 @@ class Simulator:
                 #----------아직 안짬^^!----------
 
                 print("one day passed!")
-                print("Energy consumption on day "+str(self.DAY)+": "+str(self.ENERGY_CONSUMPTION))
+                # print("Energy consumption on day "+str(self.DAY)+": "+str(self.ENERGY_CONSUMPTION))
+                # print("Energy fdc: "+str(self.ENERGY_FDC))
+                print("Energy reduction: "+str(1-self.ENERGY_CONSUMPTION/self.ENERGY_FDC))
 
                 #------init------
                 self.first_case = 0
@@ -143,14 +152,13 @@ class Simulator:
                 self.DAY += 1
                 
                 self.ENERGY_CONSUMPTION = 0
-                # self._dc = 0
+                self.ENERGY_FDC = 0
                 
             else:
                 cur_t += 1
-                #self._dc += dc
 
         f.close()
-        end_time = time.time() - start_time
+        # end_time = time.time() - start_time
         #print("Total energy consumption: "+str(self.ENERGY_CONSUMPTION))
-        print("Total work done in"+end_time+"seconds")  #타임은 왜잰거??
+        # print("Total work done in"+end_time+"seconds")  #타임은 왜잰거??
                                                         #한번돌릴때 얼마나 걸리나 알아둬야 실험할때 편할것같아서,,,
