@@ -40,10 +40,20 @@ class agent:
         newState = state
 
         Q_sa = self.Qval[self.lastAction][self.lastState]
-        self.Qval[newAction][newState] = Q_sa + self.stepsize * reward
+        Q_spap = self.Qval[newAction][newState]
+
+        new_Q_sa = Q_sa + self.stepsize * (reward + Q_spap - Q_sa)
+        if((state == 0 and newAction == 2) or (state==2 and newAction==1)):
+            #self.Qval[newAction][newState] = 0.0
+            self.Qval[newAction][newState]
+        else:
+            #self.Qval[newAction][newState] = Q_sa + self.stepsize * reward
+            self.Qval[self.lastAction][self.lastState] = new_Q_sa
         
+
         print("-----agent step-----")
-        print("last state:", self.lastState, "current state:", state)
+        #print("last action:", self.lastAction, "current action:", newAction)
+        print("current state:", state, "chosen action:", newAction)
         print("Q-value:", self.Qval)
 
         self.lastAction = newAction
@@ -53,8 +63,11 @@ class agent:
         return newAction
 
     def agent_message(self, msg):
-        if (msg==""):
-            print ("something~")
+        lst = msg.split(' ')
+        if (lst[0] == 'action'):
+            action = int(lst[1])
+            self.lastAction = action
+            print ("random action passed")
 
     
 

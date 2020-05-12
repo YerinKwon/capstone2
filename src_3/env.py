@@ -2,17 +2,26 @@
 from src_3.agent import agent
 from numpy import random
 class env:
-    def __init__(self):
+    def __init__(self, isG, isS):
         self.numState = 3
-        self.observation = Observation(0,0)
+        self.observation = Observation(0,0,0,0)
         self.lastState = 0
         self.state = 0
         self.reward = 0
         self.efficiency = 0
+        self.INTERVAL_GAMMA = 120
+        self.INTERVAL_SIGMA = 0.1
+        self.isGAMMA = isG
+        self.isSIGMA = isS
 
-    def env_start(self, action):
-        _rf = 0.2
-        print("env_start", action)
+    def env_start(self, state):
+        
+        self.observation.setState(state)
+        if(self.isGAMMA):
+            self.observation.setParam(1020)
+        elif(self.isSIGMA):
+            self.observation.setParam(0.1)
+        print("env_start with state", state)
 
         return self.observation
 
@@ -20,10 +29,13 @@ class env:
         self.state = self.observation.getState()
         if action == 0:
             nextState = self.state
+            
         elif action == 1:
             nextState = self.state + 1
+            
         elif action == 2:
             nextState = self.state - 1
+
         while(nextState == -1 or nextState == 3):
             nextAction = random.randint(0,2)
             while(nextAction == action):
@@ -34,7 +46,23 @@ class env:
                 nextState = self.state + 1
             elif nextAction == 2:
                 nextState = self.state - 1
-            action = nextAction
+            self.observation.setAction(nextAction)
+
+        if nextState == 0:
+            if(self.isGAMMA):
+                self.observation.setParam(1020)
+            elif(self.isSIGMA):
+                self.observation.setParam(0.1)
+        elif nextState == 1:
+            if(self.isGAMMA):
+                self.observation.setParam(1200)
+            elif(self.isSIGMA):
+                self.observation.setParam(0.2)
+        elif nextState == 2:
+            if(self.isGAMMA):
+                self.observation.setParam(1380)
+            elif(self.isSIGMA):
+                self.observation.setParam(0.3)
         reward = self.getReward()
 
         self.observation.setState(nextState)
@@ -42,6 +70,7 @@ class env:
         print("-----env_step-----")
         print("next action:", action)
         print("next state:", nextState, "reward:", reward)
+        print("GAMMA:",self.isGAMMA, "SIGMA:",self.isSIGMA, self.observation.getParam(),"\n")
 
         return self.observation
 
@@ -68,9 +97,11 @@ class env:
 
 
 class Observation:
-    def __init__(self, state=None, reward=None):
+    def __init__(self, state=None, reward=None, action=None, param=None):
         self.state = state
         self.reward = reward
+        self.action = action
+        self.param = param
 
     def setState(self, state):
         self.state = state
@@ -78,8 +109,20 @@ class Observation:
     def setReward(self, reward):
         self.reward = reward
 
+    def setAction(self, action):
+        self.action = action
+
+    def setParam(self, param):
+        self.param = param
+
     def getState(self):
         return self.state
 
     def getReward(self):
         return self.reward
+
+    def getAction(self):
+        return self.action
+
+    def getParam(self):
+        return self.param

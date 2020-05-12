@@ -52,11 +52,23 @@ class Simulator:
         self.nd = neighborDiscovery.neighborDiscovery()
 
         self.agent = agent()
-        self.env = env()
+        self.agent_s = agent()
+        self.agent_g = agent()
+        self.env = env(False, False)
+        self.env_s = env(False, True)
+        self.env_g = env(True, False)
         self.rl = rl()
+        self.rl_s = rl()
+        self.rl_g = rl()
 
-        self.rl.rl_init(self.agent, self.env)
-        self.rl.rl_start()
+        #self.rl.rl_init(self.agent, self.env)
+        #self.rl.rl_start()
+
+        self.rl_s.rl_init(self.agent_s, self.env_s)
+        self.rl_s.rl_start()
+
+        self.rl_g.rl_init(self.agent_g, self.env_g)
+        self.rl_g.rl_start()
 
         self.INTERVAL_SIGMA = 120
         self.INTERVAL_GAMMA = 0.1
@@ -80,9 +92,11 @@ class Simulator:
 
         while cur_row != "":
             #contact prediction
+            #self.SIGMA = self.rl_s.rl_getParam()
             predicted = self.nd.ContactPrediction(storage, self.SIGMA)
             
             #duty cycle adaptation
+            #self.GAMMA = self.rl_g.rl_getParam()
             case, dc = self.nd.DutyCycleAdaptation(predicted, cur_t, self.GAMMA)
 
             #add energy consumption by duty cycle
@@ -128,10 +142,17 @@ class Simulator:
                 effic_s = self.accuracy_sigma/self.ENERGY_CONSUMPTION
                 effic_g = self.accuracy_gamma/self.ENERGY_CONSUMPTION
 
-                msg = "efficiency " + str(effic_s)
+                msg_s = "efficiency " + str(effic_s)
+                msg_g = "efficiency " + str(effic_g)
                 
-                self.rl.rl_env_msg(msg)
-                self.rl.rl_step()
+                #self.rl.rl_env_msg(msg_s)
+                #self.rl.rl_step()
+
+                self.rl_s.rl_env_msg(msg_s)
+                self.rl_s.rl_step()
+
+                self.rl_g.rl_env_msg(msg_g)
+                self.rl_g.rl_step()
 
                 #----------업뎃된 시그마, 감마값은 어떻게 반영됨?? -----------
                 #----------아직 안짬^^!----------
