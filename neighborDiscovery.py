@@ -113,7 +113,7 @@ class neighborDiscovery:
             else:
                 cur_case = 3
                 C_exp = self.Seren(t, predicted[i-1], cur_t, GAMMA)
-            #----일단은 제일 큰값 넣긴 했는데 맞을까?
+
             if(C < C_prd+C_exp):
                 case = cur_case
                 C = C_prd+C_exp 

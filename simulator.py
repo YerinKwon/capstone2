@@ -91,6 +91,9 @@ class Simulator:
         storage = queue.Queue(maxsize=self.STORAGE_MAX)
 
         while cur_row != "":
+            if(cur_t%10000 == 0):
+                print(cur_t," seconds passed")
+
             #contact prediction
             #self.SIGMA = self.rl_s.rl_getParam()
             predicted = self.nd.ContactPrediction(storage, self.SIGMA)
@@ -116,8 +119,7 @@ class Simulator:
                     storage.get()
                 storage.put(sec)    #insert to the storage: sec
 
-                print("detected: "+str(cur_t))
-                print("case: "+str(case))
+                print("detected time: ",cur_t,", case: ",case)
                 #add to detected contacts case
                 if (case == 1):    #detected when DC_DEF
                     self.first_case += 1
@@ -156,11 +158,14 @@ class Simulator:
 
                 #----------업뎃된 시그마, 감마값은 어떻게 반영됨?? -----------
                 #----------아직 안짬^^!----------
+                # self.SIGMA = 
+                # self.GAMMA = 
 
-                print("one day passed!")
-                # print("Energy consumption on day "+str(self.DAY)+": "+str(self.ENERGY_CONSUMPTION))
-                # print("Energy fdc: "+str(self.ENERGY_FDC))
-                print("Energy reduction: "+str(1-self.ENERGY_CONSUMPTION/self.ENERGY_FDC))
+                print("############################")
+                print("one day have passed!")
+                print("Energy reduction: ",1-self.ENERGY_CONSUMPTION/self.ENERGY_FDC)
+                print("Detection accuracy: ",self.accuracy_gamma+self.accuracy_sigma)
+                print("############################\n")
 
                 #------init------
                 self.first_case = 0
