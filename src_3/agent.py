@@ -13,6 +13,7 @@ class agent:
         self.numActions = 3
         self.numStates = 3
         self.stepsize = 0.7
+        self.epsilon = 1
 
         self.Qval = [[0 for x in range(self.numActions)] for y in range(self.numStates)]
         
@@ -20,6 +21,8 @@ class agent:
         self.lastState = None
 
     def egreedy(self, theState):
+        if np.random.randint(0,2) == self.epsilon:
+            return np.random.randint(0,3)
         maxIndex = 0
         for i in range(self.numActions):
             if (self.Qval[i][theState] >= self.Qval[maxIndex][theState]):
