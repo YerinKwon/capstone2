@@ -33,6 +33,8 @@ class Simulator:
         # self._dc = 0
         self.AWAKE_ENERGY = 329.9
         self.SLEEP_ENERGY = 4.02
+        self.tSleep = 0
+        self.tScanning = 0
 
         self.first_case = 0
         self.second_case = 0
@@ -40,7 +42,7 @@ class Simulator:
         self.fourth_case = 0
 
         self.init_DC = 8
-        self.sleep_DC = 0
+        self.sleep_DC = 2
         #------------------------------
 
         self.DAY = 1
@@ -80,6 +82,12 @@ class Simulator:
             #add energy consumption by duty cycle
             self.ENERGY_CONSUMPTION += dc*0.01*self.AWAKE_ENERGY + (100-dc)*0.01*self.SLEEP_ENERGY
 
+            #add to sleep duration | scanning duration
+            if(dc == self.sleep_DC):
+                self.tSleep += 1
+            else:
+                self.tScanning += 1
+
             #if there's new log in current time: contact learning
             if(sec == cur_t):
                 #read
@@ -114,11 +122,12 @@ class Simulator:
                 effic_g = self.accuracy_gamma/self.ENERGY_CONSUMPTION
 
                 msg = "efficiency " + str(effic_s)
-                print(msg)
+                
                 self.rl.rl_env_msg(msg)
                 self.rl.rl_step()
 
                 #----------업뎃된 시그마, 감마값은 어떻게 반영됨?? -----------
+                #----------아직 안짬^^!----------
 
                 print("one day passed!")
                 print("Energy consumption on day "+str(self.DAY)+": "+str(self.ENERGY_CONSUMPTION))
@@ -128,8 +137,11 @@ class Simulator:
                 self.second_case = 0
                 self.third_case = 0
                 self.fourth_case = 0
+                self.tScanning = 0
+                self.tSleep = 0
                 cur_t = 1
                 self.DAY += 1
+                
                 self.ENERGY_CONSUMPTION = 0
                 # self._dc = 0
                 
@@ -141,3 +153,4 @@ class Simulator:
         end_time = time.time() - start_time
         #print("Total energy consumption: "+str(self.ENERGY_CONSUMPTION))
         print("Total work done in"+end_time+"seconds")  #타임은 왜잰거??
+                                                        #한번돌릴때 얼마나 걸리나 알아둬야 실험할때 편할것같아서,,,
