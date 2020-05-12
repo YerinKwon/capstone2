@@ -75,7 +75,7 @@ class Simulator:
             predicted = self.nd.ContactPrediction(storage, self.SIGMA)
             
             #duty cycle adaptation
-            dc = self.nd.DutyCycleAdaptation(predicted, cur_t, self.GAMMA)
+            case, dc = self.nd.DutyCycleAdaptation(predicted, cur_t, self.GAMMA)
 
             #add energy consumption by duty cycle
             self.ENERGY_CONSUMPTION += dc*0.01*self.AWAKE_ENERGY + (100-dc)*0.01*self.SLEEP_ENERGY
@@ -87,33 +87,24 @@ class Simulator:
                     storage.get()
                 storage.put(sec)    #insert to the storage: sec
 
+                print("detected: "+str(cur_t))
+                print("case: "+str(case))
                 #add to detected contacts case
-                #---------여기 수정해야할듯: prediction 안쪽에서 구하는걸로-----------------
-                if (dc == self.init_DC):    #detected when DC_DEF
+                if (case == 1):    #detected when DC_DEF
                     self.first_case += 1
-                elif (dc > self.init_DC):   #detected during growth
+                elif (case == 2):   #detected during growth
                     self.second_case += 1
-                elif (dc > self.sleep_DC and dc < self.init_DC): #detected when seren
+                elif (case == 3): #detected when seren
                     self.third_case += 1
-                elif (dc == self.sleep_DC): #detected when sleep
+                elif (case == 4): #detected when sleep
                     self.fourth_case += 1
-                # self._dc += 1
-                #---------------------------------------------------
 
                 cur_row = f.readline()
                 if cur_row:
                     sec, ID, x_coord, y_coord, AP_ID = list(map(int, cur_row[:-1].split(',')))
 
             if cur_t == 86400:
-                # self._dc = 100*self._dc/(3600.0*4.0*24.0)   #이거 기존코드에서는 slot size가 0.25라서 그런듯 - 하루단위도 아닌거같음 1frame = 100slot
-                # detected_contacts = self.first_case + self.second_case + self.third_case + self.fourth_case
-                # self.ENERGY_CONSUMPTION = 1.0 - (self._dc*self.AWAKE_ENERGY + (100.0-self._dc)*self.SLEEP_ENERGY)/\
-                #     (self.init_DC*self.AWAKE_ENERGY + (100.0-self.init_DC)*self.SLEEP_ENERGY)
-                
-                #논문식으로 구현 -> duty cycle구하는대로 더하기 
-                #식: ENERGY_CONSUMPTION = TOTAL_TIME_AWAKE*AWAKE_ENERGY + TOTAL_TIME_SLEEP*SLEEP_ENERGY
-
-
+                #run rl once a day
                 detected_contacts = self.first_case + self.second_case + self.third_case + self.fourth_case 
                 self.accuracy_sigma = self.second_case/detected_contacts
                 self.accuracy_gamma = self.third_case/detected_contacts
@@ -127,7 +118,7 @@ class Simulator:
                 self.rl.rl_env_msg(msg)
                 self.rl.rl_step()
 
-                #----------질문: 그러면 업뎃된 시그마, 감마값은 어떻게 반영됨?? -----------
+                #----------업뎃된 시그마, 감마값은 어떻게 반영됨?? -----------
 
                 print("one day passed!")
                 print("Energy consumption on day "+str(self.DAY)+": "+str(self.ENERGY_CONSUMPTION))
