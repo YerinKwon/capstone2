@@ -76,6 +76,8 @@ class Simulator:
         #------INITIAL VALUE: will be learned by RL-------
         self.SIGMA = 5000
         self.GAMMA = 3
+        #self.SIGMA = self.rl_s.rl_getParam()
+        #self.GAMMA = self.rl_g.rl_getParam()
 
 
     def simulate(self, filename):
