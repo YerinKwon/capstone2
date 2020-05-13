@@ -44,10 +44,11 @@ class neighborDiscovery:
         #convert to patterns of size DIMENSION
         patterns=[]
         t_list = []
+        qsize = storage.qsize()
         for i in range(self.DIMENSION):
             t_list.append(storage.get())
 
-        for i in range(storage.qsize()-self.DIMENSION):
+        for i in range(qsize-self.DIMENSION):
             patterns.append(np.array(t_list))
             storage.put(t_list[0])
             t_list = t_list[1:]
