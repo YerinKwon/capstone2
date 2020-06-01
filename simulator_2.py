@@ -91,7 +91,9 @@ class Simulator:
         f = open(filename,'r')
         cur_t = 0
         cur_row = f.readline()
-        sec, AP_ID, x_coord, y_coord, date, Client_ID = list(map(int, cur_row[:-1].split(',')))
+        sec, AP_ID, x_coord, y_coord, date, Client_ID = cur_row[:-1].split('\t')
+        sec, AP_ID, x_coord, y_coord = list(map(int, [sec, AP_ID, x_coord, y_coord]))
+        
         storage = queue.Queue(maxsize=self.STORAGE_MAX)
 
         while cur_row != "":
@@ -128,7 +130,8 @@ class Simulator:
 
                 cur_row = f.readline()
                 if cur_row:
-                    sec, ID, x_coord, y_coord, AP_ID = list(map(int, cur_row[:-1].split(',')))
+                    sec, AP_ID, x_coord, y_coord, date, Client_ID = cur_row[:-1].split('\t')
+                    sec, AP_ID, x_coord, y_coord = list(map(int, [sec, AP_ID, x_coord, y_coord]))
 
             if cur_t == 86400:
                 #run rl once a day
