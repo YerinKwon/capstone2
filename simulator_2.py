@@ -80,7 +80,7 @@ class Simulator:
         self.SIGMA = 5000
         self.GAMMA = 3
         #self.SIGMA = self.rl_s.rl_getParam()
-        #self.GAMMA = self.rl_g.rl_getParam()
+        self.GAMMA = self.rl_g.rl_getParam()
 
 
     def simulate(self, filename):
@@ -158,7 +158,7 @@ class Simulator:
                 # 일단은 env에서 시그마 = 0.1~0.3 감마 = 1020~1380 범위로 설정해둬서 rl에서 읽어오면 제대로 안돌아감
                 # parameter 관련 식 해결되면 rl_getParam()로 불러올 예정
                 #self.SIGMA = self.rl_s.rl_getParam()
-                #self.GAMMA = self.rl_g.rl_getParam()
+                self.GAMMA = self.rl_g.rl_getParam()
 
                 print("############################")
                 print("one day have passed! (", self.DAY, ")")
