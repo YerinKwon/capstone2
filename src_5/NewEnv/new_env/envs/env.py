@@ -1,3 +1,4 @@
+import numpy as np
 import gym
 from gym import error, spaces, utils
 from gym.utils import seeding
@@ -7,8 +8,10 @@ import random
 class NewEnv(gym.Env):
     metadata = {'render.modes': ['human']}
 
-    def __init__(self, isG, isS):
+    def __init__(self):
         """
+        Observation:Box(1)
+        0   state   0(min)  2(max)
         """
         self.numState = 3
         self.observation = Observation(0,0,0,0)
@@ -18,12 +21,22 @@ class NewEnv(gym.Env):
         self.efficiency = 0
         self.INTERVAL_GAMMA = 120
         self.INTERVAL_SIGMA = 0.1
-        self.isGAMMA = isG
-        self.isSIGMA = isS
+        self.isGAMMA = False
+        self.isSIGMA = False
 
-        if(isG):
-            self.observation
-    
+        self.action_space = spaces.Discrete(3)
+        low = np.array([0])
+        high = np.array([2])
+        self.observation_space = spaces.Box(low, high, dtype=np.int)
+
+        self.seed()
+        self.viewer = None
+        self.state = None
+
+    def seed(self, seed=None):
+        self.np_random, seed = seeding.np_random(seed)
+        return [seed]
+
     def step(self, action):
         """
         """
@@ -87,11 +100,15 @@ class NewEnv(gym.Env):
         lst = msg.split(' ')
         if (lst[0] == 'efficiency'):
             self.efficiency = float(lst[1])
+        elif (lst[0] == 'isGAMMA'):
+            self.isGAMMA = True
+        elif (lst[0] == 'isSIGMA'):
+            self.isSIGMA = True
 
     def close(self):
         """
         """
-"""
+
 class Observation:
     def __init__(self, state=None, reward=None, action=None, param=None):
         self.state = state
@@ -121,4 +138,4 @@ class Observation:
         return self.action
 
     def getParam(self):
-        return self.param"""
+        return self.param
