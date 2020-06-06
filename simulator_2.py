@@ -92,7 +92,7 @@ class Simulator:
         cur_t = 0
         cur_row = f.readline()
         sec, AP_ID, x_coord, y_coord, date, Client_ID = cur_row[:-1].split('\t')
-        sec, AP_ID, x_coord, y_coord = list(map(int, [sec, AP_ID, x_coord, y_coord]))
+        sec, AP_ID, x_coord, y_coord, Client_ID = list(map(int, [sec, AP_ID, x_coord, y_coord,Client_ID]))
         
         storage = queue.Queue(maxsize=self.STORAGE_MAX)
 
@@ -131,7 +131,7 @@ class Simulator:
                 cur_row = f.readline()
                 if cur_row:
                     sec, AP_ID, x_coord, y_coord, date, Client_ID = cur_row[:-1].split('\t')
-                    sec, AP_ID, x_coord, y_coord = list(map(int, [sec, AP_ID, x_coord, y_coord]))
+                    sec, AP_ID, x_coord, y_coord, Client_ID = list(map(int, [sec, AP_ID, x_coord, y_coord, Client_ID]))
 
             if cur_t == 86400:
                 #run rl once a day
