@@ -4,6 +4,8 @@ data/traceset1/*.csv
 data/trace_by_ID/*.csv
 data/new_trace_by_ID/*.csv
 data/trace_original/*.csv
+src_5/NewEnv/new_env.egg-info
+.vscode/launch.json
 
 __pycache__/
 
