@@ -27,7 +27,7 @@ class NewEnv(gym.Env):
         self.action_space = spaces.Discrete(3)
         low = np.array([0])
         high = np.array([2])
-        self.observation_space = spaces.Box(low, high, dtype=np.int)
+        self.observation_space = spaces.Box(low, high)
 
         self.seed()
         self.viewer = None
