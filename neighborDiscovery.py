@@ -129,6 +129,8 @@ class neighborDiscovery:
 
     def Seren(self, t, t_s, t_e, GAMMA):
         div_g = math.ceil((t_e-t_s)/GAMMA)
+        if div_g == 0:
+            return 0
         n_sub = math.ceil((t_e-t_s)/div_g)
         if n_sub <= 1:
             return 0
