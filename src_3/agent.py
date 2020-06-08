@@ -14,6 +14,7 @@ class agent:
         self.numStates = 3
         self.stepsize = 0.7
         self.epsilon = 1
+        self.gamma = 1
 
         self.Qval = [[0 for x in range(self.numActions)] for y in range(self.numStates)]
         
@@ -45,7 +46,7 @@ class agent:
         Q_sa = self.Qval[self.lastAction][self.lastState]
         Q_spap = self.Qval[newAction][newState]
 
-        new_Q_sa = Q_sa + self.stepsize * (reward + Q_spap - Q_sa)
+        new_Q_sa = Q_sa + self.stepsize * (reward + self.gamma* Q_spap - Q_sa)
         if((state == 0 and newAction == 2) or (state==2 and newAction==1)):
             #self.Qval[newAction][newState] = 0.0
             self.Qval[newAction][newState]

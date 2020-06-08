@@ -69,8 +69,9 @@ class neighborDiscovery:
     def SimilarityCheck(self, patterns, SIGMA):
         predicted = []
         for i,val in enumerate(patterns[:-1]):
-            if np.linalg.norm(patterns[-1]-val, ord = np.inf) < SIGMA:  #maximum norm
-            # if np.linalg.norm(patterns[-1]-val, ord = np.inf) < SIGMA:
+            standard_deviation = np.var(patterns[-1])
+            v_sigma = standard_deviation * SIGMA
+            if np.linalg.norm(patterns[-1]-val, ord = np.inf) < v_sigma:  #maximum norm
                 predicted.append(patterns[i+1][0])
         return predicted
 
@@ -128,6 +129,8 @@ class neighborDiscovery:
 
     def Seren(self, t, t_s, t_e, GAMMA):
         div_g = math.ceil((t_e-t_s)/GAMMA)
+        if div_g == 0:
+            return 0
         n_sub = math.ceil((t_e-t_s)/div_g)
         if n_sub <= 1:
             return 0

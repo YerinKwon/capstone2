@@ -65,9 +65,6 @@ class Simulator:
         self.rl_s = rl()
         self.rl_g = rl()
 
-        #self.rl.rl_init(self.agent, self.env)
-        #self.rl.rl_start()
-
         self.rl_s.rl_init(self.agent_s, self.env_s)
         self.rl_s.rl_start()
 
@@ -78,9 +75,7 @@ class Simulator:
         self.INTERVAL_GAMMA = 0.1
 
         #------INITIAL VALUE: will be learned by RL-------
-        self.SIGMA = 5000
-        self.GAMMA = 3
-        #self.SIGMA = self.rl_s.rl_getParam()
+        self.SIGMA = self.rl_s.rl_getParam()
         self.GAMMA = self.rl_g.rl_getParam()
 
 
@@ -156,9 +151,6 @@ class Simulator:
 
                 msg_s = "efficiency " + str(effic_s)
                 msg_g = "efficiency " + str(effic_g)
-                
-                #self.rl.rl_env_msg(msg_s)
-                #self.rl.rl_step()
 
                 self.rl_s.rl_env_msg(msg_s)
                 self.rl_s.rl_step()
@@ -166,9 +158,7 @@ class Simulator:
                 self.rl_g.rl_env_msg(msg_g)
                 self.rl_g.rl_step()
 
-                # 일단은 env에서 시그마 = 0.1~0.3 감마 = 1020~1380 범위로 설정해둬서 rl에서 읽어오면 제대로 안돌아감
-                # parameter 관련 식 해결되면 rl_getParam()로 불러올 예정
-                #self.SIGMA = self.rl_s.rl_getParam()
+                self.SIGMA = self.rl_s.rl_getParam()
                 self.GAMMA = self.rl_g.rl_getParam()
 
                 print("############################")
@@ -195,6 +185,3 @@ class Simulator:
                 cur_t += 1
 
         f.close()
-        # end_time = time.time() - start_time
-        #print("Total energy consumption: "+str(self.ENERGY_CONSUMPTION))
-        # print("Total work done in"+end_time+"seconds")
