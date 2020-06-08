@@ -5,6 +5,7 @@ import queue
 import neighborDiscovery
 import math
 import time
+from datetime import datetime
 
 from src_3.agent import agent
 from src_3.env import env
@@ -93,6 +94,8 @@ class Simulator:
         cur_row = f.readline()
         sec, AP_ID, x_coord, y_coord, date, Client_ID = cur_row[:-1].split('\t')
         sec, AP_ID, x_coord, y_coord, Client_ID = list(map(int, [sec, AP_ID, x_coord, y_coord,Client_ID]))
+        start_date = datetime.strptime(date,"%Y-%m-%d")
+        cur_date = start_date
         
         storage = queue.Queue(maxsize=self.STORAGE_MAX)
 
@@ -109,6 +112,13 @@ class Simulator:
             #add energy consumption by duty cycle
             self.ENERGY_CONSUMPTION += dc*0.01*self.AWAKE_ENERGY + (100-dc)*0.01*self.SLEEP_ENERGY
             self.ENERGY_FDC += self.init_DC*0.01*self.AWAKE_ENERGY + (100-self.init_DC)*0.01*self.SLEEP_ENERGY
+
+            with open("graph.csv",'a') as wf:
+                output = "{dc_def},{dc_cur},{detected}\n"
+                if sec==cur_t:
+                    wf.write(output.format(dc_def=self.init_DC, dc_cur=dc, detected=1))
+                else:
+                    wf.write(output.format(dc_def=self.init_DC, dc_cur=dc, detected=0))
 
             #if there's new log in current time: contact learning
             if(sec == cur_t):
@@ -132,6 +142,7 @@ class Simulator:
                 if cur_row:
                     sec, AP_ID, x_coord, y_coord, date, Client_ID = cur_row[:-1].split('\t')
                     sec, AP_ID, x_coord, y_coord, Client_ID = list(map(int, [sec, AP_ID, x_coord, y_coord, Client_ID]))
+                    cur_date = datetime.strptime(date,"%Y-%m-%d")
 
             if cur_t == 86400:
                 #run rl once a day
@@ -176,6 +187,9 @@ class Simulator:
                 
                 self.ENERGY_CONSUMPTION = 0
                 self.ENERGY_FDC = 0
+
+                if((cur_date-start_date).days>=5):
+                    break
                 
             else:
                 cur_t += 1

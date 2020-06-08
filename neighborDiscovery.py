@@ -70,6 +70,7 @@ class neighborDiscovery:
         predicted = []
         for i,val in enumerate(patterns[:-1]):
             if np.linalg.norm(patterns[-1]-val, ord = np.inf) < SIGMA:  #maximum norm
+            # if np.linalg.norm(patterns[-1]-val, ord = np.inf) < SIGMA:
                 predicted.append(patterns[i+1][0])
         return predicted
 
@@ -126,7 +127,8 @@ class neighborDiscovery:
 
 
     def Seren(self, t, t_s, t_e, GAMMA):
-        n_sub = math.ceil((t_e-t_s)/GAMMA)
+        div_g = math.ceil((t_e-t_s)/GAMMA)
+        n_sub = math.ceil((t_e-t_s)/div_g)
         if n_sub <= 1:
             return 0
 
