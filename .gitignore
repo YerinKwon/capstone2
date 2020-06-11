@@ -4,6 +4,11 @@ data/traceset1/*.csv
 data/trace_by_ID/*.csv
 data/new_trace_by_ID/*.csv
 data/trace_original/*.csv
+
+ipynb/figs/*
+ipynb/figs_detected/*
+ipynb/__pycache__/
+
 src_5/NewEnv/new_env.egg-info
 .vscode/launch.json
 

@@ -28,7 +28,7 @@ sec | AP_ID | x_coordinate | y_coordinate | date | Client_ID
 
 class Simulator:
     def __init__(self):
-        self.STORAGE_MAX = 40
+        self.STORAGE_MAX = 80
 
         #------for energy calculation------
         self.ENERGY_CONSUMPTION = 0
@@ -71,8 +71,8 @@ class Simulator:
         self.rl_g.rl_init(self.agent_g, self.env_g)
         self.rl_g.rl_start()
 
-        self.INTERVAL_SIGMA = 120
-        self.INTERVAL_GAMMA = 0.1
+        self.INTERVAL_SIGMA = 0.1
+        self.INTERVAL_GAMMA = 120
 
         #------INITIAL VALUE: will be learned by RL-------
         self.SIGMA = self.rl_s.rl_getParam()
@@ -178,7 +178,7 @@ class Simulator:
                 self.ENERGY_CONSUMPTION = 0
                 self.ENERGY_FDC = 0
 
-                if((cur_date-start_date).days>=5):
+                if((cur_date-start_date).days>=3):
                     break
                 
             else:
